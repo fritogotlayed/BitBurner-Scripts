@@ -83,6 +83,10 @@ const serversMeta = {
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
  */
 export async function main(ns) {
+    /* TODO
+     * Check available memory and purchase "home" memory in loop
+     * Check number of port exe's available before starting hack
+     */
     const hackScript = 'hackloop.js';
     const homeHost = 'home';
     const sleepTime = 1000 * 60; // milliseconds

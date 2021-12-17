@@ -6,9 +6,6 @@
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
  */
 export async function main(ns) {
-    /* TODO
-     * Check available memory and purchase "home" memory in loop
-     */
     const target = ns.args[0];
 
     // Compute the target security level and lowest money threshold we
