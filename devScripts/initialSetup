@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [[ -d "./devScripts" ]]; then
+
+    ./devScripts/setupVSCode
+    ./devScripts/updateTypes
+
+else
+    echo "This script is designed to be run from the root of the project. Please change directory back to this location and run the script again."
+fi
