@@ -28,62 +28,78 @@ const serversMeta = {
     'CSEC': {
         reqHackSkill: 58,
         reqNukePorts: 1,
+        restartHack: false,
+        runScript: 'backdoor.js',
     },
     'foodnstuff': {
         reqHackSkill: 1,
         reqNukePorts: 0,
+        restartHack: true,
     },
     'harakiri-sushi': {
         reqHackSkill: 40,
         reqNukePorts: 0,
+        restartHack: true,
     },
     'hong-fang-tea': {
         reqHackSkill: 30,
         reqNukePorts: 0,
+        restartHack: true,
     },
     'iron-gym': {
         reqHackSkill: 100,
         reqNukePorts: 1,
+        restartHack: true,
     },
     'joesguns': {
         reqHackSkill: 10,
         reqNukePorts: 0,
+        restartHack: true,
     },
     'max-hardware': {
         reqHackSkill: 80,
         reqNukePorts: 1,
+        restartHack: true,
     },
     'n00dles': {
         reqHackSkill: 1,
         reqNukePorts: 0,
+        restartHack: true,
     },
     'nectar-net': {
         reqHackSkill: 20,
         reqNukePorts: 0,
+        restartHack: true,
     },
     'neo-net': {
         reqHackSkill: 50,
         reqNukePorts: 1,
+        restartHack: true,
     },
     'omega-net': {
         reqHackSkill: 208,
         reqNukePorts: 2,
+        restartHack: true,
     },
     'phantasy': {
         reqHackSkill: 100,
         reqNukePorts: 2,
+        restartHack: true,
     },
     'sigma-cosmetics': {
         reqHackSkill: 5,
         reqNukePorts: 0,
+        restartHack: true,
     },
     'silver-helix': {
         reqHackSkill: 150,
         reqNukePorts: 2,
+        restartHack: true,
     },
     'zer0': {
         reqHackSkill: 75,
         reqNukePorts: 1,
+        restartHack: true,
     },
 }
 
@@ -121,12 +137,15 @@ export async function main(ns) {
 
                 // Check if the server is hacked and we could hack it
                 const shouldRun = (
-                    hackingSkill > meta.reqHackSkill
+                    hackingSkill >= meta.reqHackSkill
                     && hackToolCount >= meta.reqNukePorts
                     && !isRunning
+                    && (meta.restartHack || !ns.hasRootAccess(target))
                 );
                 if (shouldRun) {
-                    ns.exec('hackloop.js', 'home', 1, target);
+                    ns.exec(meta.runScript || 'hackloop.js', 'home', 1, target);
+                    const remotePid = ns.exec('prepServer.js', 'home', 1, target, 'hackloop-remote.js');
+                    ns.tprint(`Spawning on remote ${target} pid ${remotePid}`);
                 }
             }
         };
