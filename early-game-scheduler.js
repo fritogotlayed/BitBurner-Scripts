@@ -1,3 +1,11 @@
+const hackTools = [
+    'BruteSSH.exe',
+    'FTPCrack.exe',
+    'HTTPWorm.exe',
+    'relaySMTP.exe',
+    'SQLInject.exe',
+];
+
 const servers = [
     'CSEC',
     'foodnstuff',
@@ -85,7 +93,7 @@ const serversMeta = {
 export async function main(ns) {
     /* TODO
      * Check available memory and purchase "home" memory in loop
-     * Check number of port exe's available before starting hack
+     * CSEC doesn't have money. No real reason to continue the script once hacked first time
      */
     const hackScript = 'hackloop.js';
     const homeHost = 'home';
@@ -93,7 +101,14 @@ export async function main(ns) {
     let running = true;
     do {
         const hackingSkill = ns.getPlayer().hacking;
+        let hackToolCount = 0;
+        for (let i = 0; i < hackTools.length; i += 1) {
+            if (ns.fileExists(hackTools[i], homeHost)) {
+                hackToolCount += 1;
+            }
+        }
         ns.print(`hackingSkill: ${hackingSkill}`);
+        ns.print(`hackToolCount: ${hackToolCount}`);
 
         for (let i = 0; i < servers.length; i += 1) {
             let target = servers[i];
@@ -105,7 +120,12 @@ export async function main(ns) {
                 const isRunning = ns.isRunning(hackScript, homeHost, target);
 
                 // Check if the server is hacked and we could hack it
-                if (hackingSkill > meta.reqHackSkill && !isRunning) {
+                const shouldRun = (
+                    hackingSkill > meta.reqHackSkill
+                    && hackToolCount >= meta.reqNukePorts
+                    && !isRunning
+                );
+                if (shouldRun) {
                     ns.exec('hackloop.js', 'home', 1, target);
                 }
             }

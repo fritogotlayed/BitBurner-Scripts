@@ -12,9 +12,10 @@ export async function main(ns) {
     // should act against. Given that hacking extracts a percentage of
     // the available money we want to keep the total "bank" of the
     // target server relatively high.
+    const moneyFormat = '$0,0.00a'; // http://numeraljs.com
     const moneyThresh = ns.getServerMaxMoney(target) * 0.75;
     const securityThresh = ns.getServerMinSecurityLevel(target) + 5;
-    ns.print(`MoneyThresh: ${moneyThresh}\nSecurityThresh: ${securityThresh}`);
+    ns.print(`MoneyThresh: ${ ns.nFormat(moneyThresh, moneyFormat)}\nSecurityThresh: ${securityThresh}`);
 
     if (ns.fileExists("BruteSSH.exe", "home")) { ns.brutessh(target); }
     if (ns.fileExists("FTPCrack.exe", "home")) { ns.ftpcrack(target); }

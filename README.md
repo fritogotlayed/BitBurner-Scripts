@@ -16,3 +16,4 @@ script. This will handle creating all the various components in order to get qui
 * [BitBurner Game](https://danielyxie.github.io/bitburner/)
 * [BitBurner Official Basic Documentation](https://bitburner.readthedocs.io/en/latest/index.html)
 * [BitBurner Official Full Documentation](https://github.com/danielyxie/bitburner/blob/dev/markdown/bitburner.ns.md)
+* [BitBurner Official Reference Scripts](https://github.com/bitburner-official/bitburner-scripts)
