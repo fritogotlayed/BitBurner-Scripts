@@ -8,8 +8,8 @@ script. This will handle creating all the various components in order to get qui
 ## Getting scripts into the BitBurner game
 
 * Run the web server via the configured launch.json endpoint or direcly via node
-* In the BitBurner terminal type `wget http://localhost:8080/{scriptName} {scriptName}`
-  * Ex: `wget http://localhost:8080/hackloop.js hackloop.js`
+* In the BitBurner terminal type `wget http://localhost:8080/sync-scripts.js sync-scripts.js`
+* Run the sync script to get scripts on your BitBurner computer: `run sync-scripts.js`
 
 ## Useful Links
 
@@ -17,3 +17,8 @@ script. This will handle creating all the various components in order to get qui
 * [BitBurner Official Basic Documentation](https://bitburner.readthedocs.io/en/latest/index.html)
 * [BitBurner Official Full Documentation](https://github.com/danielyxie/bitburner/blob/dev/markdown/bitburner.ns.md)
 * [BitBurner Official Reference Scripts](https://github.com/bitburner-official/bitburner-scripts)
+* [Faction Information](https://bitburner.readthedocs.io/en/latest/basicgameplay/factions.html)
+
+## Important notes
+
+* It does not appear that you can import/require in another file when inside of a js file. Script accordingly.

@@ -12,7 +12,7 @@ const WebServer = function (configuration) {
         '.txt': 'text/plain',
         '.ns': 'text/plain',
         '.ts': 'text/plain',
-        '.js': 'text/plain',
+        // '.js': 'text/plain',
         '.html': 'text/html',
         '.css': "text/css",
         '.js': 'application/javascript',
@@ -70,22 +70,70 @@ WebServer.prototype.start = function () {
             requestedFile = fs.existsSync(requestedFile) ? requestedFile : process.argv[1].replace('webserver.js', 'favicon.ico');
         }
 
-        fs.readFile(requestedFile, "binary", function (err, file) {
-            if (err) {
-                res.writeHeader(500, {
-                    "Content-Type": "text/plain"
-                });
-                res.write(err + "\n");
-                res.end();
-            } else {
-                var contentType = self.contentTypes[path.extname(requestedFile)];
-                self.headers['Content-Type'] = contentType;
-                res.writeHead(200, self.headers); // HTTP "OK" Response
-                res.write(file, "binary");
-                res.end();
-            }
-        });
-        self.log("Remote connection from: " + req.connection.remoteAddress + " requesting file " + requestedFile);
+        const handleError = (err) => {
+            res.writeHeader(500, {
+                "Content-Type": "text/plain"
+            });
+            res.write(err + "\n");
+            res.end();
+        };
+
+        // Dynamically create the sync-scripts.js script to make it easier on users.
+        if (request === '/sync-scripts.js') {
+            // Determine what scripts we will send the caller
+            fs.readdir(self.config.directory, (err, files) => {
+                if (err) {
+                    handleError(err);
+                } else {
+                    const scripts = [];
+                    for (let i = 0; i < files.length; i++) {
+                        const fileName = files[i];
+                        // TODO: Handle more extension types
+                        if (fileName.slice(-3) === '.js' || fileName.slice(-3) === '.ns') {
+                            scripts.push(`'${fileName}'`);
+                        }
+                    }
+                    // Generate the script body
+                    const script = `/*
+ * This script is intended to use the wget tool on your BitBurner machine
+ * to load the scripts from your computer.
+ */
+export async function main(ns) {
+    // NOTE: Are sub directories really useful?
+    const scripts = [
+        ${scripts.join(',\n        ')}
+    ];
+
+    for (let i = 0; i < scripts.length; i += 1) {
+        const script = scripts[i];
+        await ns.wget(\`http://localhost:8080/$\{script}\`, script, 'home');
+    }
+}
+`;
+
+                    // Supply it to the caller
+                    self.headers['Content-Type'] = 'application/json';
+                    res.writeHead(200, self.headers); // HTTP "OK" Response
+                    res.write(Buffer.from(script, "binary"), "binary");
+                    res.end();
+                }
+            });
+
+        } else {
+            // Handle downloading of file
+            fs.readFile(requestedFile, "binary", function (err, file) {
+                if (err) {
+                    handleError(err);
+                } else {
+                    var contentType = self.contentTypes[path.extname(requestedFile)];
+                    self.headers['Content-Type'] = contentType;
+                    res.writeHead(200, self.headers); // HTTP "OK" Response
+                    res.write(file, "binary");
+                    res.end();
+                }
+            });
+        }
+        self.log("Remote connection from: " + req.socket.remoteAddress + " requesting file " + requestedFile);
     }).listen(self.config.port, function () {
         console.log("Node Webserver running at port", self.config.port);
     });
