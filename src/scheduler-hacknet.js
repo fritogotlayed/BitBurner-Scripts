@@ -1,10 +1,10 @@
 /* This script is intended to take the first argument supplied and run a "hack"
  * loop against the target.
-*/
+ */
 
 /**
-* @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
-*/
+ * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
+ */
 export async function main(ns) {
   const moneyPercentage = 0.05; // Only use a percent of the player capital so they can still work
   let running = true;
@@ -24,7 +24,7 @@ export async function main(ns) {
 
       if (workingMoney > hacknet.getPurchaseNodeCost()) {
         hacknet.purchaseNode();
-        actionTaken = true
+        actionTaken = true;
         continue;
       }
 
@@ -60,5 +60,5 @@ export async function main(ns) {
     ns.print(`${outMsg.join('\n')}`);
 
     await ns.sleep(60 * 1000); // Only update things once a minute.
-  } while (running); 
+  } while (running);
 }

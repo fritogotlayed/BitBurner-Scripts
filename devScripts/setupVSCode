@@ -23,7 +23,7 @@ if [[ -d "./devScripts" ]]; then
                 "-p",
                 "8080",
                 "-d",
-                "${workspaceFolder}",
+                "${workspaceFolder}/src",
                 "--enable_cors",
                 "--verbose"
             ],
@@ -38,13 +38,14 @@ if [[ -d "./devScripts" ]]; then
 		"prefix": "nsmain",
 		"body": [
 			"$BLOCK_COMMENT_START TODO: Update what this scripts intention is",
-			"$BLOCK_COMMENT_END",
+			" $BLOCK_COMMENT_END",
 			"",
 			"$BLOCK_COMMENT_START*",
-			"* @param {import(\".\").NS} ns Use just \"@param {NS} ns\" if editing in game",
-			"$BLOCK_COMMENT_END",
+			" * @param {import(\".\").NS} ns Use just \"@param {NS} ns\" if editing in game",
+			" $BLOCK_COMMENT_END",
 			"export async function main(ns) {",
 			"}",
+			"",
 		],
 		"description": "Creates the shell of a BitBurner script"
 	}

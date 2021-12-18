@@ -2,5 +2,5 @@
 
 echo "Fetching updated types script from bitburner official repository."
 rm -f ./index.d.ts
-curl -L https://raw.githubusercontent.com/danielyxie/bitburner/dev/src/ScriptEditor/NetscriptDefinitions.d.ts -o index.d.ts
+curl -L https://raw.githubusercontent.com/danielyxie/bitburner/dev/src/ScriptEditor/NetscriptDefinitions.d.ts -o ./src/index.d.ts
 echo "updateTypes script has completed"

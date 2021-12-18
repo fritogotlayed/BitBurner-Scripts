@@ -1,0 +1,26 @@
+{
+  "name": "bitburner-scripts",
+  "version": "0.0.1",
+  "description": "A set of scripts to play the BitBurner game",
+  "scripts": {
+    "server": "node ./devScripts/webserver.js -p 8080 -d ./src --enable_cors --verbose",
+    "pretty-check": "prettier -c ./src",
+    "pretty": "prettier -w ./src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fritogotlayed/BitBurner-Scripts.git"
+  },
+  "keywords": [
+    "BitBurner"
+  ],
+  "author": "Frito",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fritogotlayed/BitBurner-Scripts/issues"
+  },
+  "homepage": "https://github.com/fritogotlayed/BitBurner-Scripts#readme",
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  }
+}
