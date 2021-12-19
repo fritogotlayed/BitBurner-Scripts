@@ -16,9 +16,14 @@ export async function main(ns) {
   const moneyThresh = ns.getServerMaxMoney(target) * 0.75;
   const securityThresh = ns.getServerMinSecurityLevel(target) + 5;
 
-  while (true) {
+  const running = true;
+
+  while (running) {
     const currentSecurity = ns.getServerSecurityLevel(target);
     const currentMoney = ns.getServerMoneyAvailable(target);
+    if (currentMoney === 0) {
+      running = false;
+    }
     ns.print(`MoneyThresh   : ${ns.nFormat(moneyThresh, moneyFormat)}
 MoneyAvailable: ${ns.nFormat(currentMoney, moneyFormat)}
 SecurityThresh: ${securityThresh}
