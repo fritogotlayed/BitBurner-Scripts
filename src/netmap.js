@@ -6,11 +6,13 @@
  */
 const hydrateServers = (ns, data, node) => {
   const children = ns.scan(node);
+  const purchasedServers = ns.getPurchasedServers();
   children.forEach((server) => {
     const isNetTarget =
       data[server] === undefined &&
       server !== 'home' && // ignore our starter computer
-      server.indexOf('home-minion-') !== 0; // ignore auto-purchased computers
+      !purchasedServers.includes(server); // ignore all purchased servers
+      //server.indexOf('home-minion-') !== 0; // ignore auto-purchased computers
     if (isNetTarget) {
       data[server] = {
         reqHackSkill: ns.getServerRequiredHackingLevel(server),
