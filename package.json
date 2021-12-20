@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "A set of scripts to play the BitBurner game",
   "scripts": {
+    "build": "babel ./src/* -d dist",
     "server": "node ./devScripts/webserver.js -p 8080 -d ./src --enable_cors --verbose",
+    "test": "jest",
     "pretty-check": "prettier -c ./src",
     "pretty": "prettier -w ./src"
   },
@@ -21,6 +23,11 @@
   },
   "homepage": "https://github.com/fritogotlayed/BitBurner-Scripts#readme",
   "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@types/jest": "^27.0.3",
+    "jest": "^27.4.5",
     "prettier": "^2.5.1"
   }
 }

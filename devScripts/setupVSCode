@@ -33,22 +33,41 @@ if [[ -d "./devScripts" ]]; then
 
     echo "Creating VSCode snippets file"
     echo '{
-	"Main Stub for BitBurner scripts": {
-		"scope": "javascript,typescript",
-		"prefix": "nsmain",
-		"body": [
-			"$BLOCK_COMMENT_START TODO: Update what this scripts intention is",
-			" $BLOCK_COMMENT_END",
-			"",
-			"$BLOCK_COMMENT_START*",
-			" * @param {import(\".\").NS} ns Use just \"@param {NS} ns\" if editing in game",
-			" $BLOCK_COMMENT_END",
-			"export async function main(ns) {",
-			"}",
-			"",
-		],
-		"description": "Creates the shell of a BitBurner script"
-	}
+    "Main Stub for BitBurner scripts": {
+        "scope": "javascript,typescript",
+        "prefix": "nsmain",
+        "body": [
+            "$BLOCK_COMMENT_START TODO: Update what this scripts intention is",
+            " $BLOCK_COMMENT_END",
+            "",
+            "$BLOCK_COMMENT_START*",
+            " * @param {import(\".\").NS} ns Use just \"@param {NS} ns\" if editing in game",
+            " $BLOCK_COMMENT_END",
+            "export async function main(ns) {",
+            "  $0",
+            "}",
+            "",
+            "$BLOCK_COMMENT_START*",
+            " * @typedef {object} AutocompleteData https://bitburner.readthedocs.io/en/latest/netscript/advancedfunctions/autocomplete.html",
+            " * @property {array<string>} servers List of all servers in the game",
+            " * @property {array<string>} txts List of all text files on the current computer",
+            " * @property {array<string>} scripts List of all scripts on the current computer",
+            " * @property {Function} flags See the ns.flags function for more information on usage",
+            " $BLOCK_COMMENT_END",
+            "",
+            "$BLOCK_COMMENT_START*",
+            " * Handler for autocomplete functionality",
+            " * @param {AutocompleteData} data General data about the game you may want to autocomplete.",
+            " * @param {array<string>} args current arguments minus \"run script.js\"",
+            " * @returns {array<string>} The valid values for auto completion",
+            " $BLOCK_COMMENT_END",
+            "export function autocomplete(data, args) {",
+            "  return [];",
+            "}",
+            "",
+        ],
+        "description": "Creates the shell of a BitBurner script"
+    }
 }' > ./.vscode/main.code-snippets
 
     echo "Setup VSCode script complete!"

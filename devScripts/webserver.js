@@ -12,7 +12,6 @@ const WebServer = function (configuration) {
         '.txt': 'text/plain',
         '.ns': 'text/plain',
         '.ts': 'text/plain',
-        // '.js': 'text/plain',
         '.html': 'text/html',
         '.css': "text/css",
         '.js': 'application/javascript',
@@ -89,7 +88,9 @@ WebServer.prototype.start = function () {
                     for (let i = 0; i < files.length; i++) {
                         const fileName = files[i];
                         // TODO: Handle more extension types
-                        if (fileName.slice(-3) === '.js' || fileName.slice(-3) === '.ns') {
+                        const shouldInclude = !fileName.endsWith('.test.js') &&
+                            (fileName.endsWith('.js') || fileName.endsWith('.ns'));
+                        if (shouldInclude) {
                             scripts.push(`'${fileName}'`);
                         }
                     }
