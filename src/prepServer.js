@@ -9,7 +9,9 @@ export async function main(ns) {
   try {
     const target = ns.args[0];
     const nextScript = ns.args[1];
+    const currentHost = ns.getHostname();
 
+    // we do want to run these from "home"
     if (ns.fileExists('BruteSSH.exe', 'home')) {
       ns.brutessh(target);
     }
@@ -29,7 +31,8 @@ export async function main(ns) {
     ns.nuke(target);
 
     if (nextScript) {
-      await ns.scp('hackloop-remote.js', 'home', target);
+      // copy remote script from this server to target
+      await ns.scp(nextScript, currentHost, target);
       const ramReq = ns.getScriptRam(nextScript, target);
       const availableRam =
         ns.getServerMaxRam(target) - ns.getServerUsedRam(target);

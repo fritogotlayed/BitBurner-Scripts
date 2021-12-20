@@ -106,7 +106,8 @@ export async function main(ns) {
 
     for (let i = 0; i < scripts.length; i += 1) {
         const script = scripts[i];
-        await ns.wget(\`http://localhost:8080/$\{script}\`, script, 'home');
+        const host = ns.getHostname();
+        await ns.wget(\`http://localhost:8080/$\{script}\`, script, host);
     }
 }
 `;
