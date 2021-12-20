@@ -12,12 +12,13 @@ const hydrateServers = (ns, data, node) => {
       data[server] === undefined &&
       server !== 'home' && // ignore our starter computer
       !purchasedServers.includes(server); // ignore all purchased servers
-      //server.indexOf('home-minion-') !== 0; // ignore auto-purchased computers
     if (isNetTarget) {
       data[server] = {
         reqHackSkill: ns.getServerRequiredHackingLevel(server),
         reqNukePorts: ns.getServerNumPortsRequired(server),
         restartHack: !!ns.getServerMoneyAvailable(server),
+        totalMem: ns.getServerMaxRam(server),
+        hasMoney: !!ns.getServerMoneyAvailable(server),
       };
       hydrateServers(ns, data, server);
     }

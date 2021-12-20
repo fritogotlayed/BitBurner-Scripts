@@ -7,14 +7,127 @@ const hackTools = [
 ];
 
 const factionServers = [
-  "CSEC",
-  "avmnite-01h",
-  "I.I.I.I",
-  "run3theh111z",
-  "The-Cave",
-  "w-1r1d_d43m0n",
-  "darkweb",
+  'CSEC',
+  'avmnite-01h',
+  'I.I.I.I',
+  'run3theh111z',
+  'The-Cave',
+  'w-1r1d_d43m0n',
+  'darkweb',
 ];
+
+const sleepTime = 1000 * 60; // milliseconds
+const hackScriptLocal = 'hackloop.js';
+const hackScriptRemote = 'hackloop-remote.js';
+const crackScript = 'prepServer.js';
+const homeHost = 'home';
+
+/**
+ * Prints a friendly help message to the screen
+ * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
+ */
+function printHelp(ns) {
+  ns.tprint(
+    'This script auto-hacks all servers based on hack skill and available cracking tools.',
+  );
+  ns.tprint(`Usage: run ${ns.getScriptName()} RUNTYPE`);
+  ns.tprint('Where RUNTYPE is one of: local remote both.');
+  ns.tprint('NOTE: When running remotely, it will use the max number');
+  ns.tprint('of threads to use as much of the targets RAM as possible.');
+  ns.tprint('');
+  ns.tprint(
+    'WARN: Running locally will (eventually) use a lot of RAM on the host.',
+  );
+  ns.tprint('Example:');
+  ns.tprint(`> run ${ns.getScriptName()} remote`);
+  ns.tprint(`> run ${ns.getScriptName()} local`);
+  ns.tprint(`> run ${ns.getScriptName()} both`);
+}
+
+/**
+ * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
+ * @param {string} currentHost The host this script is running on
+ */
+async function getServersMeta(ns, currentHost) {
+  if (!ns.fileExists('netmap-data.json', currentHost)) {
+    ns.exec('netmap.js', currentHost, 1);
+    let netmapRunning = true;
+    do {
+      await ns.sleep(1000);
+      netmapRunning = !ns.fileExists('netmap-data.json', currentHost);
+    } while (netmapRunning);
+  }
+
+  // TODO: "Bake" this into netmap
+  let metadata = JSON.parse(ns.read('netmap-data.json'));
+  for (let i = 0; i < factionServers.length; i++) {
+    const server = factionServers[i];
+    if (metadata[server]) metadata[server].runScript = 'backdoor.js';
+  }
+
+  return metadata;
+}
+
+/**
+ * @param {object} args
+ * @param {import(".").NS} args.ns Use just "@param {NS} ns" if editing in game
+ * @param {string} args.currentHost
+ * @param {string} args.target
+ * @param {array} args.serversMeta
+ */
+function collectStatsAgainstTarget({
+  ns,
+  currentHost,
+  target,
+  serversMeta,
+  hackingSkill,
+  hackToolCount,
+}) {
+  const meta = serversMeta[target];
+
+  // Check if a script is running
+  const isRunningLocal = ns.isRunning(hackScriptLocal, currentHost, target);
+  const isRunningRemote = ns.isRunning(hackScriptRemote, target); // remote exec, see below
+
+  // Check if the server is hacked and we could hack it
+  const hackSkillMet = hackingSkill >= meta.reqHackSkill;
+  const toolCountMet = hackToolCount >= meta.reqNukePorts;
+  const alreadyHacked = ns.hasRootAccess(target);
+
+  return {
+    isRunningLocal,
+    isRunningRemote,
+    hackSkillMet,
+    toolCountMet,
+    alreadyHacked,
+  };
+}
+
+/**
+ *
+ * @param {object} args
+ * @param {import(".").NS} args.ns Use just "@param {NS} ns" if editing in game
+ * @param {string} args.host The host that will execute this script
+ * @param {string} args.script The script to run.
+ * @param {boolean} args.isRemote Toggle to help format output messages
+ * @param {string} args.target The first arg of the script. Used as "target" in output messages
+ * @param {array<string | number | boolean>} args.args A list of additional arguments to be passed to the executed script
+ */
+const startHackWithLogging = ({ ns, host, script, isRemote, target, args }) => {
+  const msgPlug = isRemote ? 'remotely on' : 'locally against';
+  ns.toast(`Starting hack ${msgPlug} ${target}`);
+  ns.print(`Starting hack ${msgPlug} ${target}`);
+
+  const pid = ns.exec(script, host, 1, target, ...args);
+
+  if (pid === 0) {
+    ns.toast(`FAILED to run ${script} ${msgPlug} ${target}`);
+    ns.print(`FAILED to run ${script} ${msgPlug} ${target}`);
+  } else {
+    ns.toast(`Started ${script} ${msgPlug} ${target}. PID: ${pid}`);
+    ns.print(`Started ${script} ${msgPlug} ${target}. PID: ${pid}`);
+  }
+};
 
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
@@ -28,47 +141,19 @@ export async function main(ns) {
   const args = ns.flags([['help', false]]);
   let runType = args._[0];
 
-  let shouldShowHelp = !runType ||
-    !['local', 'remote', 'both'].includes(runType) ||
-    args.help;
+  let shouldShowHelp =
+    !runType || !['local', 'remote', 'both'].includes(runType) || args.help;
 
   if (shouldShowHelp) {
-    ns.tprint('This script auto-hacks all servers based on hack skill and available cracking tools.');
-    ns.tprint(`Usage: run ${ns.getScriptName()} RUNTYPE`);
-    ns.tprint('Where RUNTYPE is one of: local remote both.')
-    ns.tprint('NOTE: When running remotely, it will use the max number');
-    ns.tprint('of threads to use as much of the targets RAM as possible.')
-    ns.tprint('');
-    ns.tprint('WARN: Running locally will (eventually) use a lot of RAM on the host.')
-    ns.tprint('Example:');
-    ns.tprint(`> run ${ns.getScriptName()} remote`);
-    ns.tprint(`> run ${ns.getScriptName()} local`);
-    ns.tprint(`> run ${ns.getScriptName()} both`);
+    printHelp(ns);
     return;
   }
 
-  const hackScriptLocal = 'hackloop.js';
-  const hackScriptRemote = 'hackloop-remote.js';
-  const crackScript = 'prepServer.js';
-
-  const homeHost = 'home';
   const currentHost = ns.getHostname();
-
-  const sleepTime = 1000 * 60; // milliseconds
-  let running = true;
-
-  if (!ns.fileExists('netmap-data.json', currentHost)) {
-    ns.exec('netmap.js', currentHost, 1);
-    let netmapRunning = true;
-    do {
-      await ns.sleep(1000);
-      netmapRunning = !ns.fileExists('netmap-data.json', currentHost);
-    } while (netmapRunning)
-  }
-
-  const serversMeta = JSON.parse(ns.read('netmap-data.json'));
+  const serversMeta = await getServersMeta(ns, currentHost);
   const servers = Object.keys(serversMeta);
 
+  let running = true;
   do {
     const hackingSkill = ns.getPlayer().hacking;
     let hackToolCount = 0;
@@ -87,23 +172,23 @@ export async function main(ns) {
       if (!meta) {
         ns.print(`WARNING: Could not find metadata for server: ${target}`);
       } else {
-        // add faction script to meta for faction servers
-        if (factionServers.includes(target)) {
-          meta.runScript = 'backdoor.js';
-        }
-        // Check if a script is running
-        const isRunningLocal = ns.isRunning(hackScriptLocal, currentHost, target); // run hackloop.js target
-        const isRunningRemote = ns.isRunning(hackScriptRemote, target); // remote exec, see below
-
-        // Check if the server is hacked and we could hack it
-        const hackSkillMet = hackingSkill >= meta.reqHackSkill;
-        const toolCountMet = hackToolCount >= meta.reqNukePorts;
-        const alreadyHacked = ns.hasRootAccess(target);
+        const {
+          isRunningLocal,
+          isRunningRemote,
+          hackSkillMet,
+          toolCountMet,
+          alreadyHacked,
+        } = await collectStatsAgainstTarget({
+          ns,
+          target,
+          currentHost,
+          serversMeta,
+          hackingSkill,
+          hackToolCount,
+        });
 
         const shouldRun =
-          hackSkillMet &&
-          toolCountMet &&
-          (meta.restartHack || !alreadyHacked);
+          hackSkillMet && toolCountMet && (meta.restartHack || !alreadyHacked);
         const shouldRunLocal =
           shouldRun &&
           !isRunningLocal &&
@@ -114,32 +199,30 @@ export async function main(ns) {
           (runType === 'remote' || runType === 'both');
 
         if (shouldRunLocal) {
-          ns.toast(`Starting hack locally against ${target}`);
-          ns.print(`Starting hack locally against ${target}`);
-          ns.exec(meta.runScript || hackScriptLocal, currentHost, 1, target);
-        }
-        if (shouldRunRemote) {
-          ns.toast(`Starting hack remotely on ${target}`);
-          const remotePid = ns.exec(
-            crackScript,
-            currentHost,
-            1,
+          startHackWithLogging({
+            ns,
+            host: currentHost,
+            script: meta.runScript || hackScriptLocal,
+            isRemote: false,
             target,
-            hackScriptRemote,
-          );
-          if (remotePid === 0) {
-            ns.toast(`FAILED to run crackScript ${crackScript} on remote ${target}`);
-            ns.print(`FAILED to run crackScript ${crackScript} on remote ${target}`);
-          } else {
-            ns.toast(`Spawning on remote ${target} pid ${remotePid}`);
-            ns.print(`Spawning on remote ${target} pid ${remotePid}`);
-          }
+          });
+        }
+
+        if (shouldRunRemote) {
+          startHackWithLogging({
+            ns,
+            host: currentHost,
+            script: crackScript,
+            isRemote: true,
+            target,
+            args: [hackScriptRemote],
+          });
         }
         await ns.sleep(500); // sleep 0.5 second to give time for next server on this pass
       }
     }
 
     await ns.sleep(sleepTime);
-    ns.print(`Snoozing for ${sleepTime/1000} seconds.`)
+    ns.print(`Snoozing for ${sleepTime / 1000} seconds.`);
   } while (running);
 }
