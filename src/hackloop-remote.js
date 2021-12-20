@@ -17,7 +17,7 @@ export async function main(ns) {
     const moneyThresh = ns.getServerMaxMoney(target) * 0.75;
     const securityThresh = ns.getServerMinSecurityLevel(target) + 5;
 
-    const running = true;
+    let running = true;
 
     while (running) {
       const currentSecurity = ns.getServerSecurityLevel(target);
