@@ -17,6 +17,8 @@ const hydrateServers = (ns, data, node) => {
         reqHackSkill: ns.getServerRequiredHackingLevel(server),
         reqNukePorts: ns.getServerNumPortsRequired(server),
         restartHack: !!ns.getServerMoneyAvailable(server),
+        totalMem: ns.getServerMaxRam(server),
+        hasMoney: !!ns.getServerMoneyAvailable(server),
       };
       hydrateServers(ns, data, server);
     }
