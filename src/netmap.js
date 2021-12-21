@@ -33,5 +33,5 @@ export async function main(ns) {
 
   hydrateServers(ns, data, 'home');
 
-  ns.write('netmap-data.json', JSON.stringify(data), 'w');
+  await ns.write('netmap-data.json', JSON.stringify(data), 'w');
 }
