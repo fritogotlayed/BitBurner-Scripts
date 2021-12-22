@@ -174,7 +174,12 @@ export async function main(ns) {
     ns.print(`scanning ${servers.length} servers.`);
 
     for (let i = 0; i < servers.length; i += 1) {
+      // TODO: do this better
       let target = servers[i];
+      if (target == 'darkweb') {
+        continue;
+      }
+
       let meta = serversMeta[target];
       if (!meta) {
         ns.print(`WARNING: Could not find metadata for server: ${target}`);
@@ -213,6 +218,7 @@ export async function main(ns) {
             isRemote: false,
             target,
             threads,
+            args: [],
           });
         }
 

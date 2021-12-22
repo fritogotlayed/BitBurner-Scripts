@@ -61,25 +61,22 @@ export async function main(ns) {
     let totalTargetCount = servers.length;
 
     // find the most expensive server we can with money available
-    const largestServerAvailable = ns.getPurchasedServerMaxRam();
-    let largestServerAffordable = 0;
-    for (let i = 2; i < largestServerAvailable ; i *= 2 ) {
-      let serverCost = ns.getPurchasedServerCost(i);
-      if (serverCost > workingMoney) {
-        break;
-      } else {
-        largestServerAffordable = i;
-      }
+    const maxServerSize = ns.getPurchasedServerMaxRam();
+    let maxServerAffordable = 0;
+    let maxServerAffordableCost = 0;
+    for (let i = 2; i < maxServerSize && maxServerAffordableCost < workingMoney; i *= 2 ) {
+      maxServerAffordableCost = ns.getPurchasedServerCost(i);
+      maxServerAffordable = i;
     }
 
     const outMsg = [];
     let minimumTotalRamCost = (totalTargetCount * hackScriptRamCost) + schedulerRamCost;
-    if (minimumTotalRamCost < largestServerAffordable) {
+    if (minimumTotalRamCost < maxServerAffordable) {
       // buy the largest affordable
-      var serverName = ns.purchaseServer('hackloophost', largestServerAffordable);
+      var serverName = ns.purchaseServer('hackloophost', maxServerAffordable);
 
       // determine how many threads we can run on affordable
-      let availableRam = largestServerAffordable - schedulerRamCost;
+      let availableRam = maxServerAffordable - schedulerRamCost;
       let hackScriptRam = totalTargetCount * hackScriptRamCost;
       let threads = Math.floor(availableRam / hackScriptRam);
 
@@ -99,7 +96,7 @@ export async function main(ns) {
     } else {
       // this server can't run the bare minimum, skip this round
       outMsg.push(`Could not afford server with enought RAM`);
-      outMsg.push(`Largest Affordable: ${largestServerAffordable}`);
+      outMsg.push(`Largest Affordable: ${maxServerAffordableCost}`);
       outMsg.push(`Min RAM Cost:       ${minimumTotalRamCost}`);
     }
 
