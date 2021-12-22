@@ -1,0 +1,14 @@
+{
+    "ignore": [
+        "*.test.js",
+        ".github/*",
+        ".vscode/*",
+        "coverage/*",
+        "docs/*",
+        "dist/*",
+        "node_modules/*",
+        "package.json",
+        "package-lock.json"
+    ],
+    "delay": 2500
+}

@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "A set of scripts to play the BitBurner game",
   "scripts": {
-    "build": "babel ./src/* -d dist",
-    "server": "node ./devScripts/webserver.js -p 8080 -d ./src --enable_cors --verbose",
+    "build": "rollup -c ./rollup.config.js",
+    "server": "concurrently \"node ./devScripts/webserver.js -p 8080 -d ./dist --enable_cors --verbose\" \"nodemon --exec \\\"rm -rf ./dist/*.js && npm run build\\\"\"",
     "test": "jest",
     "pretty-check": "prettier -c ./src",
     "pretty": "prettier -w ./src"
@@ -27,7 +27,10 @@
     "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
     "@types/jest": "^27.0.3",
+    "concurrently": "^6.5.1",
     "jest": "^27.4.5",
-    "prettier": "^2.5.1"
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
+    "rollup": "^2.61.1"
   }
 }
