@@ -1,7 +1,7 @@
 /* TODO: Update what this scripts intention is
  */
 
-import { displayHelp } from './libs/common'
+import { displayHelp } from './libs/common';
 
 const OUT_FILE = 'netmap-data.json';
 const FLAGS_DEF = [['help', false, 'Displays this help message']];
@@ -40,7 +40,8 @@ export async function main(ns) {
   if (args.help) {
     displayHelp({
       ns,
-      description: 'This script collects information about the currently viewable network.',
+      description:
+        'This script collects information about the currently viewable network.',
       flagsDefinition: FLAGS_DEF,
       additionalLines: [
         `Usage: run ${ns.getScriptName()}`,
