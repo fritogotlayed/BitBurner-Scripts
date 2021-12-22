@@ -14,18 +14,31 @@ export async function main(ns) {
   const maxServerSize = ns.getPurchasedServerMaxRam();
   let maxServerAffordable = 0;
   let maxServerAffordableCost = 0;
-  for (let i = 2; i < maxServerSize && maxServerAffordableCost < workingMoney; i *= 2 ) {
+  for (
+    let i = 2;
+    i < maxServerSize && maxServerAffordableCost < workingMoney;
+    i *= 2
+  ) {
     maxServerAffordableCost = ns.getPurchasedServerCost(i);
     maxServerAffordable = i;
   }
 
   // iterate servers, see if you can afford an upgrade, upgrade it
-  for (let i = 0; i < purchasedServers.length && workingMoney >= maxServerAffordableCost; i++) {
+  for (
+    let i = 0;
+    i < purchasedServers.length && workingMoney >= maxServerAffordableCost;
+    i++
+  ) {
     const currentServer = purchasedServers[i];
     const currentSize = ns.getServerMaxRam(currentServer);
     //TODO: handle negative case (log failure)
-    if (workingMoney >= maxServerAffordableCost && currentSize < maxServerAffordable) {
-      ns.print(`Upgrading ${currentServer} from ${currentSize}Gb to ${maxServerAffordable}Gb`)
+    if (
+      workingMoney >= maxServerAffordableCost &&
+      currentSize < maxServerAffordable
+    ) {
+      ns.print(
+        `Upgrading ${currentServer} from ${currentSize}Gb to ${maxServerAffordable}Gb`,
+      );
       ns.killall(currentServer);
       ns.deleteServer(currentServer);
       ns.purchaseServer(currentServer, maxServerAffordable);
@@ -34,7 +47,6 @@ export async function main(ns) {
       // TODO: call that script here
     }
   }
-
 
   // let maxServers = ns.getPurchasedServerLimit();
   // let maxSize = ns.getPurchasedServerMaxRam();

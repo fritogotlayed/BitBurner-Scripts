@@ -1,13 +1,13 @@
 /* TODO: Update what this scripts intention is
  */
 const factionServers = [
-  "CSEC",
-  "avmnite-01h",
-  "I.I.I.I",
-  "run3theh111z",
-  "The-Cave",
-  "w-1r1d_d43m0n",
-  "darkweb",
+  'CSEC',
+  'avmnite-01h',
+  'I.I.I.I',
+  'run3theh111z',
+  'The-Cave',
+  'w-1r1d_d43m0n',
+  'darkweb',
 ];
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
@@ -50,7 +50,7 @@ export async function main(ns) {
       do {
         await ns.sleep(1000);
         netmapRunning = !ns.fileExists('netmap-data.json', currentHost);
-      } while (netmapRunning)
+      } while (netmapRunning);
     }
 
     const serversMeta = JSON.parse(ns.read('netmap-data.json'));
@@ -64,13 +64,18 @@ export async function main(ns) {
     const maxServerSize = ns.getPurchasedServerMaxRam();
     let maxServerAffordable = 0;
     let maxServerAffordableCost = 0;
-    for (let i = 2; i < maxServerSize && maxServerAffordableCost < workingMoney; i *= 2 ) {
+    for (
+      let i = 2;
+      i < maxServerSize && maxServerAffordableCost < workingMoney;
+      i *= 2
+    ) {
       maxServerAffordableCost = ns.getPurchasedServerCost(i);
       maxServerAffordable = i;
     }
 
     const outMsg = [];
-    let minimumTotalRamCost = (totalTargetCount * hackScriptRamCost) + schedulerRamCost;
+    let minimumTotalRamCost =
+      totalTargetCount * hackScriptRamCost + schedulerRamCost;
     if (minimumTotalRamCost < maxServerAffordable) {
       // buy the largest affordable
       var serverName = ns.purchaseServer('hackloophost', maxServerAffordable);
@@ -85,12 +90,22 @@ export async function main(ns) {
         await ns.scp(schedulerScript, 'home', serverName);
         await ns.scp(hackScript, 'home', serverName);
         await ns.scp('netmap.js', 'home', serverName);
-      
+
         // execute the scheduler to spawn hackloops
-        let pid = ns.exec(schedulerScript, serverName, 1, '--runtype', 'local', '--threads', threads);
+        let pid = ns.exec(
+          schedulerScript,
+          serverName,
+          1,
+          '--runtype',
+          'local',
+          '--threads',
+          threads,
+        );
 
         if (pid <= 0) {
-          outMsg.push(`FAILED to exec ${schedulerScript} on host ${serverName}`);
+          outMsg.push(
+            `FAILED to exec ${schedulerScript} on host ${serverName}`,
+          );
         }
       }
     } else {

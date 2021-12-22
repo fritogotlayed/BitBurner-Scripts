@@ -28,14 +28,20 @@ const homeHost = 'home';
  */
 function printHelp(ns) {
   const scriptName = ns.getScriptName();
-  ns.tprint('This script auto-hacks all servers based on hack skill and available cracking tools.');
-  ns.tprint(`Usage: run ${scriptName} --runtype RUNTYPE [--threads NUMTHREADS]`);
-  ns.tprint('Where RUNTYPE is one of: local remote both')
-  ns.tprint('and NUMTHREADS is the desired number of threads, defaults to 1.')
+  ns.tprint(
+    'This script auto-hacks all servers based on hack skill and available cracking tools.',
+  );
+  ns.tprint(
+    `Usage: run ${scriptName} --runtype RUNTYPE [--threads NUMTHREADS]`,
+  );
+  ns.tprint('Where RUNTYPE is one of: local remote both');
+  ns.tprint('and NUMTHREADS is the desired number of threads, defaults to 1.');
   ns.tprint('NOTE: When running remotely, it will use the max number');
-  ns.tprint('of threads to use as much of the targets RAM as possible.')
+  ns.tprint('of threads to use as much of the targets RAM as possible.');
   ns.tprint('');
-  ns.tprint('WARN: Running locally will (eventually) use a lot of RAM on the host.')
+  ns.tprint(
+    'WARN: Running locally will (eventually) use a lot of RAM on the host.',
+  );
   ns.tprint('Example:');
   ns.tprint(`> run ${scriptName} --runtype remote --threads 6`);
   ns.tprint(`> run ${scriptName} --runtype local --threads 1`);
@@ -111,7 +117,15 @@ function collectStatsAgainstTarget({
  * @param {string} args.target The first arg of the script. Used as "target" in output messages
  * @param {array<string | number | boolean>} args.args A list of additional arguments to be passed to the executed script
  */
-const startHackWithLogging = ({ ns, host, script, isRemote, target, threads, args }) => {
+const startHackWithLogging = ({
+  ns,
+  host,
+  script,
+  isRemote,
+  target,
+  threads,
+  args,
+}) => {
   const msgPlug = isRemote ? 'remotely on' : 'locally against';
   ns.toast(`Starting hack ${msgPlug} ${target}`);
   ns.print(`Starting hack ${msgPlug} ${target}`);
@@ -142,7 +156,7 @@ export async function main(ns) {
   const args = ns.flags([
     ['help', false],
     ['runtype', ''],
-    ['threads', 1]
+    ['threads', 1],
   ]);
 
   let runType = args.runtype;
