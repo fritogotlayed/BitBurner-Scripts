@@ -10,10 +10,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node 14.x
+      - name: Use Node 16.x
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: '16.x'
+      - run: npm --version
       - run: npm ci
       - run: npm run test --if-present
       - run: npm run pretty-check --if-present
