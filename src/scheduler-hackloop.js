@@ -27,11 +27,15 @@ const homeHost = 'home';
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
  */
 function printHelp(ns) {
+  const scriptName = ns.getScriptName();
   ns.tprint(
     'This script auto-hacks all servers based on hack skill and available cracking tools.',
   );
-  ns.tprint(`Usage: run ${ns.getScriptName()} RUNTYPE`);
-  ns.tprint('Where RUNTYPE is one of: local remote both.');
+  ns.tprint(
+    `Usage: run ${scriptName} --runtype RUNTYPE [--threads NUMTHREADS]`,
+  );
+  ns.tprint('Where RUNTYPE is one of: local remote both');
+  ns.tprint('and NUMTHREADS is the desired number of threads, defaults to 1.');
   ns.tprint('NOTE: When running remotely, it will use the max number');
   ns.tprint('of threads to use as much of the targets RAM as possible.');
   ns.tprint('');
@@ -39,9 +43,9 @@ function printHelp(ns) {
     'WARN: Running locally will (eventually) use a lot of RAM on the host.',
   );
   ns.tprint('Example:');
-  ns.tprint(`> run ${ns.getScriptName()} remote`);
-  ns.tprint(`> run ${ns.getScriptName()} local`);
-  ns.tprint(`> run ${ns.getScriptName()} both`);
+  ns.tprint(`> run ${scriptName} --runtype remote --threads 6`);
+  ns.tprint(`> run ${scriptName} --runtype local --threads 1`);
+  ns.tprint(`> run ${scriptName} --runtype both`);
 }
 
 /**
@@ -113,12 +117,20 @@ function collectStatsAgainstTarget({
  * @param {string} args.target The first arg of the script. Used as "target" in output messages
  * @param {array<string | number | boolean>} args.args A list of additional arguments to be passed to the executed script
  */
-const startHackWithLogging = ({ ns, host, script, isRemote, target, args }) => {
+const startHackWithLogging = ({
+  ns,
+  host,
+  script,
+  isRemote,
+  target,
+  threads,
+  args,
+}) => {
   const msgPlug = isRemote ? 'remotely on' : 'locally against';
   ns.toast(`Starting hack ${msgPlug} ${target}`);
   ns.print(`Starting hack ${msgPlug} ${target}`);
 
-  const pid = ns.exec(script, host, 1, target, ...args);
+  const pid = ns.exec(script, host, threads, target, ...args);
 
   if (pid === 0) {
     ns.toast(`FAILED to run ${script} ${msgPlug} ${target}`);
@@ -138,8 +150,17 @@ export async function main(ns) {
    * CSEC doesn't have money. No real reason to continue the script once hacked first time
    */
   ns.disableLog('sleep');
-  const args = ns.flags([['help', false]]);
-  let runType = args._[0];
+  ns.disableLog('getServerMoneyAvailable');
+  ns.disableLog('getServerMaxRam');
+
+  const args = ns.flags([
+    ['help', false],
+    ['runtype', ''],
+    ['threads', 1],
+  ]);
+
+  let runType = args.runtype;
+  let threads = args.threads;
 
   let shouldShowHelp =
     !runType || !['local', 'remote', 'both'].includes(runType) || args.help;
@@ -167,7 +188,12 @@ export async function main(ns) {
     ns.print(`scanning ${servers.length} servers.`);
 
     for (let i = 0; i < servers.length; i += 1) {
+      // TODO: do this better
       let target = servers[i];
+      if (target == 'darkweb') {
+        continue;
+      }
+
       let meta = serversMeta[target];
       if (!meta) {
         ns.print(`WARNING: Could not find metadata for server: ${target}`);
@@ -205,16 +231,22 @@ export async function main(ns) {
             script: meta.runScript || hackScriptLocal,
             isRemote: false,
             target,
+            threads,
+            args: [],
           });
         }
 
         if (shouldRunRemote) {
+          // calculate threads to max out remote RAM
+          let remoteMemReq = ns.getScriptRam(hackScriptRemote, target);
+          let threadCount = Math.floor(meta.totalMem / remoteMemReq);
           startHackWithLogging({
             ns,
             host: currentHost,
             script: crackScript,
             isRemote: true,
             target,
+            threadCount,
             args: [hackScriptRemote],
           });
         }
