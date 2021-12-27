@@ -1,9 +1,17 @@
-/* TODO: Update what this scripts intention is
+/* Script that creates a JSON file of server metadata to be used in other scripts
  */
 
 import { displayHelp } from './libs/common';
 
 const OUT_FILE = 'netmap-data.json';
+const FACTION_SERVERS = [
+  'CSEC',
+  'avmnite-01h',
+  'I.I.I.I',
+  'run3theh111z',
+  'The-Cave',
+];
+
 const FLAGS_DEF = [['help', false, 'Displays this help message']];
 
 /**
@@ -23,9 +31,9 @@ function hydrateServers(ns, data, node) {
       data[server] = {
         reqHackSkill: ns.getServerRequiredHackingLevel(server),
         reqNukePorts: ns.getServerNumPortsRequired(server),
-        restartHack: !!ns.getServerMoneyAvailable(server),
         totalMem: ns.getServerMaxRam(server),
-        hasMoney: !!ns.getServerMoneyAvailable(server),
+        hasMoney: !!ns.getServerMaxMoney(server),
+        factionServer: FACTION_SERVERS.indexOf(server) !== -1,
       };
       hydrateServers(ns, data, server);
     }

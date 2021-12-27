@@ -5,6 +5,7 @@ if [[ -d "./devScripts" ]]; then
     mkdir -p ./.vscode
 
     echo "Creating VSCode launch.json file"
+    echo "NOTE: the VSCode endpoint can be helpful to debug but normal usage should be through NPM which provides more features."
     echo '{
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
@@ -37,7 +38,7 @@ if [[ -d "./devScripts" ]]; then
         "scope": "javascript,typescript",
         "prefix": "nsmain",
         "body": [
-            "$BLOCK_COMMENT_START TODO: Update what this scripts intention is",
+            "$BLOCK_COMMENT_START ${1:TODO: Update what this scripts intention is}",
             " $BLOCK_COMMENT_END",
             "",
             "$BLOCK_COMMENT_START*",
@@ -62,7 +63,7 @@ if [[ -d "./devScripts" ]]; then
             " * @returns {array<string>} The valid values for auto completion",
             " $BLOCK_COMMENT_END",
             "export function autocomplete(data, args) {",
-            "  return [];",
+            "  return ${2:[]};",
             "}",
             "",
         ],

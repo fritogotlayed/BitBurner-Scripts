@@ -23,7 +23,7 @@ describe(__filename, () => {
       getPurchasedServers: () => [],
       getServerRequiredHackingLevel: () => 1,
       getServerNumPortsRequired: () => 0,
-      getServerMoneyAvailable: () => 1,
+      getServerMaxMoney: () => 1,
       getServerMaxRam: () => 8,
 
       write: jest.fn().mockResolvedValue(),
@@ -40,9 +40,9 @@ describe(__filename, () => {
         child: {
           reqHackSkill: 1,
           reqNukePorts: 0,
-          restartHack: true,
           totalMem: 8,
           hasMoney: true,
+          factionServer: false,
         },
       }),
       'w',
@@ -66,23 +66,23 @@ describe(__filename, () => {
       alpha: {
         reqHackSkill: 5,
         reqNukePorts: 0,
-        restartHack: false,
         totalMem: 4,
         hasMoney: false,
+        factionServer: false,
       },
       child: {
         reqHackSkill: 1,
         reqNukePorts: 0,
-        restartHack: true,
         totalMem: 8,
         hasMoney: true,
+        factionServer: false,
       },
       delta: {
         reqHackSkill: 20,
         reqNukePorts: 1,
-        restartHack: true,
         totalMem: 16,
         hasMoney: true,
+        factionServer: false,
       },
     };
     const nsScanMock = jest
@@ -95,7 +95,7 @@ describe(__filename, () => {
       getServerRequiredHackingLevel: (name) =>
         securityResults[name].reqHackSkill,
       getServerNumPortsRequired: (name) => securityResults[name].reqNukePorts,
-      getServerMoneyAvailable: (name) => moneyMap[name],
+      getServerMaxMoney: (name) => moneyMap[name],
       getServerMaxRam: (name) => securityResults[name].totalMem,
 
       write: jest.fn().mockResolvedValue(),

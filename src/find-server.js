@@ -1,5 +1,7 @@
-/* TODO: Update what this scripts intention is
+/* This script is useful for finding a series of servers through which to connect to your intended server
  */
+
+import { displayHelp } from './libs/common.js';
 
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
@@ -47,12 +49,18 @@ export async function main(ns) {
   let target = args._[0];
 
   if (!target || args.help) {
-    ns.tprint(
-      'This script helps you find a server on the network and shows you the path to get to it.',
-    );
-    ns.tprint(`Usage: run ${ns.getScriptName()} SERVER`);
-    ns.tprint('Example:');
-    ns.tprint(`> run ${ns.getScriptName()} n00dles`);
+    const scriptName = ns.getScriptName();
+    displayHelp({
+      ns,
+      description:
+        'This script helps you find a server on the network and shows you the path to get to it.',
+      additionalLines: [
+        `Usage: run ${ns.getScriptName()} SERVER`,
+        'Example:',
+        `> run ${ns.getScriptName()} n00dles`,
+      ],
+    });
+
     return;
   }
 
