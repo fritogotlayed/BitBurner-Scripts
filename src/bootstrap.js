@@ -6,7 +6,7 @@
  */
 export async function main(ns) {
   ns.exec('netmap.js', 'home', 1);
-  ns.sleep(1000);
+  await ns.sleep(1000);
   ns.exec('scheduler-hacknet.js', 'home', 1);
   ns.exec('scheduler-hackloop.js', 'home', 1, '--runtype', 'both');
   ns.exec('scheduler-hostloop.js', 'home', 1);
