@@ -214,7 +214,7 @@ export async function main(ns) {
         });
 
         const shouldRun =
-          hackSkillMet && toolCountMet && (meta.restartHack || !alreadyHacked);
+          hackSkillMet && toolCountMet && (meta.hasMoney || !alreadyHacked);
         const shouldRunLocal =
           shouldRun &&
           !isRunningLocal &&
