@@ -22,31 +22,7 @@ const hackScriptRemote = 'hackloop-remote.js';
 const crackScript = 'prepServer.js';
 const homeHost = 'home';
 
-/**
- * Prints a friendly help message to the screen
- * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
- */
-function printHelp(ns) {
-  const scriptName = ns.getScriptName();
-  ns.tprint(
-    'This script auto-hacks all servers based on hack skill and available cracking tools.',
-  );
-  ns.tprint(
-    `Usage: run ${scriptName} --runtype RUNTYPE [--threads NUMTHREADS]`,
-  );
-  ns.tprint('Where RUNTYPE is one of: local remote both');
-  ns.tprint('and NUMTHREADS is the desired number of threads, defaults to 1.');
-  ns.tprint('NOTE: When running remotely, it will use the max number');
-  ns.tprint('of threads to use as much of the targets RAM as possible.');
-  ns.tprint('');
-  ns.tprint(
-    'WARN: Running locally will (eventually) use a lot of RAM on the host.',
-  );
-  ns.tprint('Example:');
-  ns.tprint(`> run ${scriptName} --runtype remote --threads 6`);
-  ns.tprint(`> run ${scriptName} --runtype local --threads 1`);
-  ns.tprint(`> run ${scriptName} --runtype both`);
-}
+import { displayHelp } from './libs/common';
 
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
@@ -166,7 +142,26 @@ export async function main(ns) {
     !runType || !['local', 'remote', 'both'].includes(runType) || args.help;
 
   if (shouldShowHelp) {
-    printHelp(ns);
+    const scriptName = ns.getScriptName();
+    displayHelp({
+      ns,
+      description:
+        'This script auto-hacks all servers based on hack skill and available cracking tools.',
+      flagsDefinition,
+      additionalLines: [
+        `Usage: run ${scriptName} --runtype RUNTYPE [--threads NUMTHREADS]`,
+        'Where RUNTYPE is one of: local remote both',
+        'and NUMTHREADS is the desired number of threads, defaults to 1.',
+        'NOTE: When running remotely, it will use the max number',
+        'of threads to use as much of the targets RAM as possible.',
+        '',
+        'WARN: Running locally will (eventually) use a lot of RAM on the host.',
+        'Example:',
+        `> run ${scriptName} --runtype remote --threads 6`,
+        `> run ${scriptName} --runtype local --threads 1`,
+        `> run ${scriptName} --runtype both`,
+      ],
+    });
     return;
   }
 
