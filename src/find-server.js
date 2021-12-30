@@ -55,9 +55,9 @@ export async function main(ns) {
       description:
         'This script helps you find a server on the network and shows you the path to get to it.',
       additionalLines: [
-        `Usage: run ${ns.getScriptName()} SERVER`,
+        `Usage: run ${scriptName} SERVER`,
         'Example:',
-        `> run ${ns.getScriptName()} n00dles`,
+        `> run ${scriptName} n00dles`,
       ],
     });
 

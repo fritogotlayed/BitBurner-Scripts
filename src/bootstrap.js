@@ -10,6 +10,7 @@ export async function main(ns) {
   ns.exec('scheduler-hacknet.js', 'home', 1);
   ns.exec('scheduler-hackloop.js', 'home', 1, '--runtype', 'both');
   ns.exec('scheduler-hostloop.js', 'home', 1);
+  ns.exec('scheduler-playerActions.js', 'home', 1);
 }
 
 /**
