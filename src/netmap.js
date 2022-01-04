@@ -10,6 +10,8 @@ const FACTION_SERVERS = [
   'I.I.I.I',
   'run3theh111z',
   'The-Cave',
+  'w-1r1d_d43m0n',
+  'darkweb',
 ];
 
 const FLAGS_DEF = [['help', false, 'Displays this help message']];
