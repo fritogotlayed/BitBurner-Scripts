@@ -1,31 +1,11 @@
 /* TODO: Update what this scripts intention is
  */
 
-const FILES_METADATA = {
-  'BruteSSH.exe': { cost: -1 },
-  'FTPCrack.exe': { cost: -1 },
-  'relaySMTP.exe': { cost: -1 },
-  'HTTPWorm.exe': { cost: -1 },
-  'SQLInject.exe': { cost: -1 },
-  'DeepscanV1.exe': { cost: -1 },
-  'DeepscanV2.exe': { cost: -1 },
-  'ServerProfiler.exe': { cost: -1 },
-  'AutoLink.exe': { cost: -1 },
-};
+import { FILES_METADATA } from './libs/files';
 
 const MONEY_PERCENTAGE = 0.5; // We gotta spend money to make money
 
-const FILES = [
-  'BruteSSH.exe',
-  'FTPCrack.exe',
-  'relaySMTP.exe',
-  'HTTPWorm.exe',
-  'SQLInject.exe',
-  'DeepscanV1.exe',
-  'DeepscanV2.exe',
-  'ServerProfiler.exe',
-  'AutoLink.exe',
-];
+const FILES = Object.keys(FILES_METADATA);
 
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
@@ -46,7 +26,10 @@ export async function main(ns) {
       for (const file of FILES) {
         if (!ns.fileExists(file, 'home')) {
           allExist = false;
-          if (FILES_METADATA[file].cost <= workingMoney) {
+          if (
+            FILES_METADATA[file].cost <= workingMoney &&
+            FILES_METADATA[file].isNukeTool
+          ) {
             ns.purchaseProgram(file);
             workingMoney = workingMoney - FILES_METADATA[file].cost;
           }
