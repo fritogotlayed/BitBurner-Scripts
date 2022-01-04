@@ -1,6 +1,6 @@
 // Do library mocks before importing item under test
-jest.mock('./libs/common', () => {
-  const originalModule = jest.requireActual('./libs/common');
+jest.mock('./libs/help', () => {
+  const originalModule = jest.requireActual('./libs/help');
   return {
     ...originalModule,
     displayHelp: jest.fn().mockReturnValue(undefined),
@@ -8,7 +8,7 @@ jest.mock('./libs/common', () => {
 });
 
 const netmap = require('./netmap');
-const { displayHelp } = require('./libs/common');
+const { displayHelp } = require('./libs/help');
 
 beforeEach(() => {
   jest.resetAllMocks();

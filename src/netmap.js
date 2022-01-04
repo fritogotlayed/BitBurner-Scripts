@@ -1,7 +1,7 @@
 /* Script that creates a JSON file of server metadata to be used in other scripts
  */
 
-import { displayHelp } from './libs/common';
+import { displayHelp } from './libs/help';
 
 const OUT_FILE = 'netmap-data.json';
 const FACTION_SERVERS = [

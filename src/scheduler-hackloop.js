@@ -22,7 +22,7 @@ const hackScriptRemote = 'hackloop-remote.js';
 const crackScript = 'prepServer.js';
 const homeHost = 'home';
 
-import { displayHelp } from './libs/common';
+import { displayHelp } from './libs/help';
 
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
