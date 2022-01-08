@@ -1,5 +1,5 @@
 /* Quick entry point for getting the users system up and running after installing augments
-*/
+ */
 
 import { displayHelp } from './libs/help';
 
@@ -12,7 +12,6 @@ const FLAGS_DEF = [
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
  */
 export async function main(ns) {
-
   const args = ns.flags(FLAGS_DEF);
   const { help, bitnode } = args; // bitnode is a future expansion point
 
@@ -20,7 +19,8 @@ export async function main(ns) {
     const scriptName = ns.getScriptName();
     displayHelp({
       ns,
-      description: 'This script provides a quick entry point for post-aug install setup.',
+      description:
+        'This script provides a quick entry point for post-aug install setup.',
       flagsDefinition: FLAGS_DEF,
       additionalLines: [
         'Example:',
