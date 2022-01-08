@@ -35,7 +35,7 @@ async function getServersMeta(ns, currentHost) {
     } while (netmapRunning);
   }
 
-  return metadata;
+  return JSON.parse(ns.read('netmap-data.json'));
 }
 
 /**
