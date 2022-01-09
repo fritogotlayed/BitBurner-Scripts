@@ -1,7 +1,7 @@
 /* Script that creates a JSON file of server metadata to be used in other scripts
  */
 
-import { displayHelp } from './libs/common';
+import { displayHelp } from './libs/help';
 
 const OUT_FILE = 'netmap-data.json';
 const FACTION_SERVERS = [
@@ -10,6 +10,8 @@ const FACTION_SERVERS = [
   'I.I.I.I',
   'run3theh111z',
   'The-Cave',
+  'w-1r1d_d43m0n',
+  'darkweb',
 ];
 
 const FLAGS_DEF = [['help', false, 'Displays this help message']];

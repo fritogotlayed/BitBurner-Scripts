@@ -1,28 +1,25 @@
-const hackTools = [
-  'BruteSSH.exe',
-  'FTPCrack.exe',
-  'HTTPWorm.exe',
-  'relaySMTP.exe',
-  'SQLInject.exe',
-];
-
-const factionServers = [
-  'CSEC',
-  'avmnite-01h',
-  'I.I.I.I',
-  'run3theh111z',
-  'The-Cave',
-  'w-1r1d_d43m0n',
-  'darkweb',
-];
-
-const sleepTime = 1000 * 60; // milliseconds
+const SLEEP_TIME = 1000 * 60; // milliseconds
 const hackScriptLocal = 'hackloop.js';
 const hackScriptRemote = 'hackloop-remote.js';
 const crackScript = 'prepServer.js';
 const homeHost = 'home';
 
-import { displayHelp } from './libs/common';
+import { displayHelp } from './libs/help';
+import { FILES_METADATA } from './libs/files';
+
+const FLAGS_DEF = [
+  ['help', false, 'Displays this help message'],
+  [
+    'runType',
+    '',
+    '"local", "remote" or "both". Controls where hacks are started.',
+  ],
+  ['threads', 1, ''],
+];
+
+const hackTools = Object.values(FILES_METADATA)
+  .filter((meta) => meta.isNukeTool)
+  .map((elem) => elem.name);
 
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
@@ -38,14 +35,7 @@ async function getServersMeta(ns, currentHost) {
     } while (netmapRunning);
   }
 
-  // TODO: "Bake" this into netmap
-  let metadata = JSON.parse(ns.read('netmap-data.json'));
-  for (let i = 0; i < factionServers.length; i++) {
-    const server = factionServers[i];
-    if (metadata[server]) metadata[server].runScript = 'backdoor.js';
-  }
-
-  return metadata;
+  return JSON.parse(ns.read('netmap-data.json'));
 }
 
 /**
@@ -101,18 +91,23 @@ const startHackWithLogging = ({
   target,
   threads,
   args,
+  verboseLogging = false,
 }) => {
   const msgPlug = isRemote ? 'remotely on' : 'locally against';
-  ns.toast(`Starting hack ${msgPlug} ${target}`);
+  if (verboseLogging) {
+    ns.toast(`Starting hack ${msgPlug} ${target}`);
+  }
   ns.print(`Starting hack ${msgPlug} ${target}`);
 
   const pid = ns.exec(script, host, threads, target, ...args);
 
   if (pid === 0) {
-    ns.toast(`FAILED to run ${script} ${msgPlug} ${target}`);
+    ns.toast(`FAILED to run ${script} ${msgPlug} ${target}`, 'error');
     ns.print(`FAILED to run ${script} ${msgPlug} ${target}`);
   } else {
-    ns.toast(`Started ${script} ${msgPlug} ${target}. PID: ${pid}`);
+    if (verboseLogging) {
+      ns.toast(`Started ${script} ${msgPlug} ${target}. PID: ${pid}`);
+    }
     ns.print(`Started ${script} ${msgPlug} ${target}. PID: ${pid}`);
   }
 };
@@ -123,22 +118,16 @@ const startHackWithLogging = ({
 export async function main(ns) {
   /* TODO
    * Check available memory and purchase "home" memory in loop
-   * CSEC doesn't have money. No real reason to continue the script once hacked first time
+   * Some faction servers do not have money. No real reason to continue the script once hacked first time
    */
   ns.disableLog('sleep');
   ns.disableLog('getServerMoneyAvailable');
   ns.disableLog('getServerMaxRam');
 
-  const args = ns.flags([
-    ['help', false],
-    ['runtype', ''],
-    ['threads', 1],
-  ]);
+  const args = ns.flags(FLAGS_DEF);
+  const { runType, threads } = args;
 
-  let runType = args.runtype;
-  let threads = args.threads;
-
-  let shouldShowHelp =
+  const shouldShowHelp =
     !runType || !['local', 'remote', 'both'].includes(runType) || args.help;
 
   if (shouldShowHelp) {
@@ -223,7 +212,7 @@ export async function main(ns) {
           startHackWithLogging({
             ns,
             host: currentHost,
-            script: meta.runScript || hackScriptLocal,
+            script: meta.factionServer ? hackScriptLocal : hackScriptLocal, // TODO: After SF 4.1 installing the backdoor will be script-able.
             isRemote: false,
             target,
             threads,
@@ -249,7 +238,7 @@ export async function main(ns) {
       }
     }
 
-    await ns.sleep(sleepTime);
-    ns.print(`Snoozing for ${sleepTime / 1000} seconds.`);
+    await ns.sleep(SLEEP_TIME);
+    ns.print(`Snoozing for ${SLEEP_TIME / 1000} seconds.`);
   } while (running);
 }

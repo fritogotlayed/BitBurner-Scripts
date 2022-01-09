@@ -1,7 +1,7 @@
 /* This script is useful for finding a series of servers through which to connect to your intended server
  */
 
-import { displayHelp } from './libs/common.js';
+import { displayHelp } from './libs/help.js';
 
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game

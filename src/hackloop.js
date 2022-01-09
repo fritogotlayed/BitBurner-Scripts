@@ -2,7 +2,7 @@
  * loop against the target.
  */
 
-import { displayHelp } from './libs/common.js';
+import { displayHelp } from './libs/help.js';
 
 const FLAGS_DEF = [
   ['bypassHack', false, 'True to exit the script instead of hack'],

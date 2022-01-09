@@ -96,7 +96,7 @@ export async function main(ns) {
           schedulerScript,
           serverName,
           1,
-          '--runtype',
+          '--runType',
           'local',
           '--threads',
           threads,
