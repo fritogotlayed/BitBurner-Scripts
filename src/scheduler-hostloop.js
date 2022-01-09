@@ -7,12 +7,6 @@
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
  */
 export async function main(ns) {
-  // scheduler-hackloop.js  = 4      Gb RAM
-  // hackloop.js            = 2.85   Gb RAM
-  // total hackable servers = 69     (not all have money...)
-  // (69 * 2.85) + 4        = 200.65 GB RAM
-  // buy 256
-
   // TODO: show error return if not run from 'home'
 
   // how much money do we have to play with?

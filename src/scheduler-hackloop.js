@@ -136,7 +136,7 @@ export async function main(ns) {
       ns,
       description:
         'This script auto-hacks all servers based on hack skill and available cracking tools.',
-      flagsDefinition,
+      flagsDefinition: FLAGS_DEF,
       additionalLines: [
         `Usage: run ${scriptName} --runtype RUNTYPE [--threads NUMTHREADS]`,
         'Where RUNTYPE is one of: local remote both',
