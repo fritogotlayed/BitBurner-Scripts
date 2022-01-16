@@ -19,7 +19,7 @@ function getGreaterLength(currentMax, itemToCheck) {
 
 /**
  * @param {object} args
- * @param {import(".").NS} args.ns Use just "@param {NS} ns" if editing in game
+ * @param {import("..").NS} args.ns Use just "@param {NS} ns" if editing in game
  * @param {string} description the short description to print
  * @param {} additionalLines
  */

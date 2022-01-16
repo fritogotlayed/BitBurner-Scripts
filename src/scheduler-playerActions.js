@@ -10,6 +10,37 @@ const FILES = Object.keys(FILES_METADATA);
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
  */
+function writeOrPurchaseProgram(ns) {
+  let allExist = true;
+  try {
+    for (const file of FILES) {
+      if (!ns.fileExists(file, 'home')) {
+        allExist = false;
+        // TODO: Consider writing program if proper sourcefile in place and player has "int" property
+        if (
+          FILES_METADATA[file].cost <= workingMoney &&
+          FILES_METADATA[file].isNukeTool
+        ) {
+          ns.purchaseProgram(file);
+          workingMoney = workingMoney - FILES_METADATA[file].cost;
+        }
+      }
+    }
+  } catch (err) {
+    allExist = false;
+    ns.toast(
+      'Purchase of hack EXE failed. Do you have the TOR router?',
+      'warning',
+    );
+  }
+
+  // Not sure if this is the best approach. Trying something to see how it works scaling.
+  return { noMoreActions: allExist, isBusy: ns.isBusy() };
+}
+
+/**
+ * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
+ */
 export async function main(ns) {
   // TODO: Is this script even worth writing given after you buy the augs you start with
   // the various exes?
@@ -20,31 +51,9 @@ export async function main(ns) {
 
   while (running) {
     workingMoney = ns.getPlayer().money * MONEY_PERCENTAGE;
-
-    let allExist = true;
-    try {
-      for (const file of FILES) {
-        if (!ns.fileExists(file, 'home')) {
-          allExist = false;
-          if (
-            FILES_METADATA[file].cost <= workingMoney &&
-            FILES_METADATA[file].isNukeTool
-          ) {
-            ns.purchaseProgram(file);
-            workingMoney = workingMoney - FILES_METADATA[file].cost;
-          }
-        }
-      }
-    } catch (err) {
-      allExist = false;
-      ns.toast(
-        'Purchase of hack EXE failed. Do you have the TOR router?',
-        'warning',
-      );
-    }
-
-    if (allExist) {
-      running = false;
+    if (!ns.isBusy()) {
+      const progResult = writeOrPurchaseProgram(ns);
+      running = !progResult.noMoreActions;
     }
 
     await ns.sleep(60 * 1000);

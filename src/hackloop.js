@@ -56,7 +56,7 @@ export async function main(ns) {
   }
   ns.nuke(target);
 
-  while (true) {
+  while (moneyThresh > 0) {
     const currentSecurity = ns.getServerSecurityLevel(target);
     const currentMoney = ns.getServerMoneyAvailable(target);
     ns.print(`MoneyThresh   : ${ns.nFormat(moneyThresh, moneyFormat)}
