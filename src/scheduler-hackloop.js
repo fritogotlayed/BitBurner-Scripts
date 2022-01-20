@@ -197,16 +197,18 @@ export async function main(ns) {
           hackToolCount,
         });
 
+        const runTypeIncludesLocal = ['local', 'both'].indexOf(runType) !== -1;
+        const runTypeIncludesRemote =
+          ['remote', 'both'].indexOf(runType) !== -1;
         const shouldRun =
           hackSkillMet && toolCountMet && (meta.hasMoney || !alreadyHacked);
         const shouldRunLocal =
-          shouldRun &&
-          !isRunningLocal &&
-          (runType === 'local' || runType === 'both');
+          shouldRun && !isRunningLocal && runTypeIncludesLocal;
         const shouldRunRemote =
           shouldRun &&
           !isRunningRemote &&
-          (runType === 'remote' || runType === 'both');
+          meta.totalMem > 0 && // TODO: See if this prevents us from being ready to backdoor servers like CSEC
+          runTypeIncludesRemote;
 
         if (shouldRunLocal) {
           startHackWithLogging({

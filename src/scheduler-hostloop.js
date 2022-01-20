@@ -1,14 +1,8 @@
-/* TODO: Update what this scripts intention is
+/* This script will purchase servers that will run remote hacking against servers in the universe with money.
+ * It is assumed that server will run a single threaded hackloop against each server that is available to be
+ * hacked.
  */
-const factionServers = [
-  'CSEC',
-  'avmnite-01h',
-  'I.I.I.I',
-  'run3theh111z',
-  'The-Cave',
-  'w-1r1d_d43m0n',
-  'darkweb',
-];
+
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
  */
@@ -30,8 +24,8 @@ export async function main(ns) {
 
   let running = true;
   do {
-    let workingMoney = ns.getPlayer().money * moneyPercentage;
-    let thisRunMoney = workingMoney;
+    const thisRunMoney = ns.getPlayer().money * moneyPercentage;
+    let workingMoney = thisRunMoney;
 
     let schedulerRamCost = ns.getScriptRam(schedulerScript);
     let hackScriptRamCost = ns.getScriptRam(hackScript);
@@ -55,9 +49,7 @@ export async function main(ns) {
 
     const serversMeta = JSON.parse(ns.read('netmap-data.json'));
     // we don't run hackloop.js against faction servers
-    const servers = Object.keys(serversMeta).filter((item) => {
-      return !factionServers.includes(item);
-    });
+    const servers = Object.keys(serversMeta).filter((e) => !e.factionServer);
     let totalTargetCount = servers.length;
 
     // find the most expensive server we can with money available
@@ -74,9 +66,9 @@ export async function main(ns) {
     }
 
     const outMsg = [];
-    let minimumTotalRamCost =
+    const minRequiredRam =
       totalTargetCount * hackScriptRamCost + schedulerRamCost;
-    if (minimumTotalRamCost < maxServerAffordable) {
+    if (minRequiredRam < maxServerAffordable) {
       // buy the largest affordable
       var serverName = ns.purchaseServer('hackloophost', maxServerAffordable);
 
@@ -112,11 +104,11 @@ export async function main(ns) {
       // this server can't run the bare minimum, skip this round
       outMsg.push(`Could not afford server with enought RAM`);
       outMsg.push(`Largest Affordable: ${maxServerAffordableCost}`);
-      outMsg.push(`Min RAM Cost:       ${minimumTotalRamCost}`);
+      outMsg.push(`Min RAM Cost:       ${minRequiredRam}`);
     }
 
-    outMsg.push(`Start $: ${ns.nFormat(thisRunMoney, '0.0a')}`);
-    outMsg.push(`Spent $: ${ns.nFormat(thisRunMoney - workingMoney, '0.0a')}`);
+    outMsg.push(`Start $: ${ns.nFormat(workingMoney, '0.0a')}`);
+    // outMsg.push(`Spent $: ${ns.nFormat(thisRunMoney - workingMoney, '0.0a')}`);
 
     ns.print(`${outMsg.join('\n')}`);
 
