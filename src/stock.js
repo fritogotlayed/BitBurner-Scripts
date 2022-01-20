@@ -75,7 +75,7 @@ function format(num) {
     num /= 1000;
   }
 
-  return (dollarPrefix + num.toFixed(3) + symbols[i]);
+  return dollarPrefix + num.toFixed(3) + symbols[i];
 }
 
 /** @param {NS} ns **/
