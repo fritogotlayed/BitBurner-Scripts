@@ -3,6 +3,15 @@
 
 import { displayHelp } from './libs/help.js';
 
+const FLAGS_DEF = [
+  ['help', false, 'Displays this help message'],
+  [
+    'displayType',
+    'tree',
+    '"tree" or "commands". Configures how results are displayed',
+  ],
+];
+
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
  * @param {string} parent
@@ -44,7 +53,7 @@ function recursiveScan(ns, parent, server, target, route) {
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
  */
 export async function main(ns) {
-  const args = ns.flags([['help', false]]);
+  const args = ns.flags(FLAGS_DEF);
   let route = [];
   let target = args._[0];
 
@@ -65,9 +74,19 @@ export async function main(ns) {
   }
 
   recursiveScan(ns, '', 'home', target, route);
-  for (const i in route) {
-    const extra = i > 0 ? 'ட ' : '';
-    ns.tprint(`${'  '.repeat(i)}${extra}${route[i]}`);
+
+  switch (args.displayType) {
+    case 'commands':
+      ns.tprint(
+        route.map((r) => (r === 'home' ? '' : `connect ${r};`)).join(' '),
+      );
+      break;
+    default:
+      for (const i in route) {
+        const extra = i > 0 ? 'ட ' : '';
+        ns.tprint(`${'  '.repeat(i)}${extra}${route[i]}`);
+      }
+      break;
   }
 }
 

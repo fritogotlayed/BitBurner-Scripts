@@ -77,6 +77,8 @@ SecurityLevel : ${currentSecurity}`);
       }
       await ns.hack(target);
     }
+
+    await ns.sleep(500);
   }
 }
 
