@@ -36,6 +36,8 @@ SecurityLevel : ${currentSecurity}`);
       } else {
         await ns.hack(target);
       }
+
+      await ns.sleep(500);
     }
   } catch (err) {
     ns.write('error-log.txt', err, 'w');
