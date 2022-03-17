@@ -214,7 +214,7 @@ export async function main(ns) {
           startHackWithLogging({
             ns,
             host: currentHost,
-            script: meta.factionServer ? hackScriptLocal : hackScriptLocal, // TODO: After SF 4.1 installing the backdoor will be script-able.
+            script: hackScriptLocal,
             isRemote: false,
             target,
             threads,

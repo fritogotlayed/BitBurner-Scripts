@@ -53,6 +53,7 @@ export async function main(ns) {
   ns.exec('scheduler-hostloop.js', 'home', 1);
   if (playerSourceFiles.filter((e) => e.id === 4).length > 0) {
     ns.exec('scheduler-playerActions.js', 'home', 1);
+    ns.exec('scheduler-backdoorloop.js', 'home', 1);
   } else {
     ns.print(
       'bypassing invoke of scheduler-playerActions since sourcefile 4 is not present on the player.',

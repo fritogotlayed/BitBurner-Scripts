@@ -2,6 +2,7 @@
  */
 
 import { displayHelp } from './libs/help.js';
+import { recursiveScan } from './libs/scan.js';
 
 const FLAGS_DEF = [
   ['help', false, 'Displays this help message'],
@@ -11,43 +12,6 @@ const FLAGS_DEF = [
     '"tree" or "commands". Configures how results are displayed',
   ],
 ];
-
-/**
- * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game
- * @param {string} parent
- * @param {string} server
- * @param {string} target
- * @param {array} route
- * @returns {boolean}
- */
-function recursiveScan(ns, parent, server, target, route) {
-  // Get the children of the machine we're on
-  const children = ns.scan(server);
-
-  for (let i = 0; i < children.length; i += 1) {
-    const child = children[i];
-
-    // Don't go "backwards"
-    if (parent === child) {
-      continue;
-    }
-
-    // If we found our target
-    if (child === target) {
-      route.unshift(child);
-      route.unshift(server);
-      return true;
-    }
-
-    // Keep on looking...
-    if (recursiveScan(ns, server, child, target, route)) {
-      route.unshift(server);
-      return true;
-    }
-  }
-
-  return false;
-}
 
 /**
  * @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game

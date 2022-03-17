@@ -20,6 +20,7 @@ describe(__filename, () => {
     const nsMock = {
       flags: () => ({ help: false }),
       scan: () => ['home', 'child'],
+      ls: () => false,
       getPurchasedServers: () => [],
       getServerRequiredHackingLevel: () => 1,
       getServerNumPortsRequired: () => 0,
@@ -43,6 +44,7 @@ describe(__filename, () => {
           totalMem: 8,
           hasMoney: true,
           factionServer: false,
+          hasContracts: false,
         },
       }),
       'w',
@@ -51,6 +53,20 @@ describe(__filename, () => {
 
   test('main creates expected output file when branching connections', async () => {
     // Arrange
+    const nsLsMockResults = {
+      home: {
+        '.cct': []
+      },
+      child: {
+        '.cct': []
+      },
+      alpha: {
+        '.cct': []
+      },
+      delta: {
+        '.cct': ['foo.cct']
+      },
+    };
     const nsScanMockResults = {
       home: ['child', 'home'],
       child: ['alpha', 'child', 'delta', 'home'],
@@ -69,6 +85,7 @@ describe(__filename, () => {
         totalMem: 4,
         hasMoney: false,
         factionServer: false,
+        hasContracts: false,
       },
       child: {
         reqHackSkill: 1,
@@ -76,6 +93,7 @@ describe(__filename, () => {
         totalMem: 8,
         hasMoney: true,
         factionServer: false,
+        hasContracts: false,
       },
       delta: {
         reqHackSkill: 20,
@@ -83,14 +101,17 @@ describe(__filename, () => {
         totalMem: 16,
         hasMoney: true,
         factionServer: false,
+        hasContracts: true,
       },
     };
     const nsScanMock = jest
       .fn()
       .mockImplementation((name) => nsScanMockResults[name]);
+    const nsLsMock = jest.fn().mockImplementation((name, ext) => nsLsMockResults[name][ext])
     const nsMock = {
       flags: () => ({ help: false }),
       scan: nsScanMock,
+      ls: nsLsMock,
       getPurchasedServers: () => [],
       getServerRequiredHackingLevel: (name) =>
         securityResults[name].reqHackSkill,
@@ -128,4 +149,18 @@ describe(__filename, () => {
     expect(nsMock.write.mock.calls.length).toBe(0);
     expect(displayHelp.mock.calls.length).toBe(1);
   });
+
+  test('autocomplete returns empty array', () => {
+    // Arrange
+
+    // Act
+    const result = netmap.autocomplete({
+      servers: ['server1', 'server2'],
+      txts: ['txt1', 'txt2'],
+      scripts: ['script1', 'script2'],
+    });
+
+    // Assert
+    expect(result).toStrictEqual([]);
+  })
 });
