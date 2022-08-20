@@ -6,9 +6,9 @@ import { displayHelp } from './libs/help';
 const OUT_FILE = 'netmap-data.json';
 const FACTION_SERVERS = [
   'CSEC',
-  'avmnite-01h',
+  'avmnite-02h',
   'I.I.I.I',
-  'run3theh111z',
+  'run4theh111z',
   'The-Cave',
   'w-1r1d_d43m0n',
   'darkweb',
@@ -36,6 +36,7 @@ function hydrateServers(ns, data, node) {
         totalMem: ns.getServerMaxRam(server),
         hasMoney: !!ns.getServerMaxMoney(server),
         factionServer: FACTION_SERVERS.indexOf(server) !== -1,
+        hasContracts: ns.ls(server, '.cct').length > 0,
       };
       hydrateServers(ns, data, server);
     }

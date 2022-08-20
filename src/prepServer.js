@@ -32,7 +32,7 @@ export async function main(ns) {
 
     if (nextScript) {
       // copy remote script from this server to target
-      await ns.scp(nextScript, currentHost, target);
+      await ns.scp(nextScript, target, currentHost);
       const ramReq = ns.getScriptRam(nextScript, target);
       const availableRam =
         ns.getServerMaxRam(target) - ns.getServerUsedRam(target);

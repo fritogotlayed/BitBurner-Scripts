@@ -160,7 +160,7 @@ export async function main(ns) {
 
   let running = true;
   do {
-    const hackingSkill = ns.getPlayer().hacking;
+    const hackingSkill = ns.getPlayer().skills.hacking;
     let hackToolCount = 0;
     for (let i = 0; i < hackTools.length; i += 1) {
       if (ns.fileExists(hackTools[i], homeHost)) {
@@ -214,7 +214,7 @@ export async function main(ns) {
           startHackWithLogging({
             ns,
             host: currentHost,
-            script: meta.factionServer ? hackScriptLocal : hackScriptLocal, // TODO: After SF 4.1 installing the backdoor will be script-able.
+            script: hackScriptLocal,
             isRemote: false,
             target,
             threads,

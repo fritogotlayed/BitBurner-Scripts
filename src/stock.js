@@ -6,7 +6,7 @@ let commission = 100000; //Buy or sell commission
 let numCycles = 2; //Each cycle is 5 seconds
 let desiredExpRet = 0.0004; // Desired expected return on investments
 
-/** @param {NS} ns **/
+/** @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game **/
 function refresh(ns, stocks, myStocks, buyStocks) {
   let corpus = ns.getServerMoneyAvailable('home');
   myStocks.length = 0;
@@ -44,27 +44,26 @@ function refresh(ns, stocks, myStocks, buyStocks) {
   return corpus;
 }
 
-/** @param {NS} ns **/
+/** @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game **/
 function buy(ns, stock, numShares) {
-  let boughtPrice = ns.stock.buy(stock.sym, numShares);
+  let boughtPrice = ns.stock.buyStock(stock.sym, numShares);
   if (boughtPrice > 0) {
     ns.print(`Bought ${stock.sym} for ${format(numShares * boughtPrice)}`);
     //ns.print('Expected Return (' + stock.sym + '): ' + stock.expRet);
   }
 }
 
-/** @param {NS} ns **/
+/** @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game **/
 function sell(ns, stock, numShares) {
   let profit = numShares * (stock.price - stock.buyPrice) - 2 * commission;
-  let soldPrice = ns.stock.sell(stock.sym, numShares);
+  let soldPrice = ns.stock.sellStock(stock.sym, numShares);
   ns.print(
-    `Sold ${stock.sym} for profit of ${format(profit)} at ${
-      Math.round(soldPrice * 100) / 100
+    `Sold ${stock.sym} for profit of ${format(profit)} at ${Math.round(soldPrice * 100) / 100
     }`,
   );
 }
 
-/** @param {NS} ns **/
+/** @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game **/
 function format(num) {
   let symbols = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc'];
   let dollarPrefix = Math.sign(num) < 0 ? '-$' : '$';
@@ -78,9 +77,9 @@ function format(num) {
   return dollarPrefix + num.toFixed(3) + symbols[i];
 }
 
-/** @param {NS} ns **/
+/** @param {import(".").NS} ns Use just "@param {NS} ns" if editing in game **/
 export async function main(ns) {
-  //Initialise
+  // Initialize
   ns.disableLog('ALL');
   let stocks = [];
   let myStocks = [];
@@ -136,7 +135,7 @@ export async function main(ns) {
     } else {
       ns.print(
         'There are currently no stocks to buy at the desired expRet of ' +
-          desiredExpRet,
+        desiredExpRet,
       );
     }
 
