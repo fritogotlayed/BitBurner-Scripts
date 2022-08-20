@@ -73,9 +73,9 @@ export async function main(ns) {
 
       if (threads > 0) {
         // copy scripts from 'home' to new serverName
-        await ns.scp(schedulerScript, 'home', serverName);
-        await ns.scp(hackScript, 'home', serverName);
-        await ns.scp('netmap.js', 'home', serverName);
+        await ns.scp(schedulerScript, serverName, 'home');
+        await ns.scp(hackScript, serverName, 'home');
+        await ns.scp('netmap.js', serverName, 'home');
 
         // execute the scheduler to spawn hackloops
         let pid = ns.exec(

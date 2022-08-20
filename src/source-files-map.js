@@ -30,7 +30,7 @@ export async function main(ns) {
     });
   }
 
-  const data = ns.getOwnedSourceFiles().map((e) => ({
+  const data = ns.singularity.getOwnedSourceFiles().map((e) => ({
     id: e.n,
     level: e.lvl,
   }));

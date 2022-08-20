@@ -46,14 +46,14 @@ export async function main(ns) {
         ) {
           recursiveScan(ns, '', 'home', target, route);
           for (let j = 0; j < route.length; j++) {
-            ns.connect(route[j]);
+            ns.singularity.connect(route[j]);
           }
 
           await ns.write(BACKDOOR_SIGNAL, '', 'w');
-          await ns.installBackdoor();
+          await ns.singularity.installBackdoor();
           route.reverse();
           for (let j = 0; j < route.length; j++) {
-            ns.connect(route[j]);
+            ns.singularity.connect(route[j]);
           }
         }
       }

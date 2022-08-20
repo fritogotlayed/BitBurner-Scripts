@@ -160,7 +160,7 @@ export async function main(ns) {
 
   let running = true;
   do {
-    const hackingSkill = ns.getPlayer().hacking;
+    const hackingSkill = ns.getPlayer().skills.hacking;
     let hackToolCount = 0;
     for (let i = 0; i < hackTools.length; i += 1) {
       if (ns.fileExists(hackTools[i], homeHost)) {

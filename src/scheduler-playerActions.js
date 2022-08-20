@@ -27,23 +27,23 @@ function writeOrPurchaseProgram({ ns, currentMoney, shouldBuy, shouldFocus }) {
     const orderedFiles = Object.values(FILES_METADATA).sort((a, b) =>
       a.isNukeTool === b.isNukeTool ? 0 : a.isNukeTool ? -1 : 1,
     );
-    const hackingSkill = ns.getPlayer().hacking;
+    const hackingSkill = ns.getPlayer().skills.hacking;
 
     // log(ns, `writing or purchasing programs. Money: ${currentMoney}  HackingSkill: ${hackingSkill}`);
 
     for (const file of orderedFiles) {
       // log(ns, `processing file: ${file.name} - ${file.hackLevelReq}`);
-      if (!ns.fileExists(file.name, 'home') && !ns.isBusy()) {
+      if (!ns.fileExists(file.name, 'home') && !ns.singularity.isBusy()) {
         allExist = false;
         // TODO: Consider writing program if proper sourcefile in place and player has "int" property
         if (shouldBuy) {
           if (file.cost <= workingMoney) {
-            ns.purchaseProgram(file.name);
+            ns.singularity.purchaseProgram(file.name);
             workingMoney = workingMoney - file.cost;
           }
         } else {
           if (file.hackLevelReq <= hackingSkill) {
-            ns.createProgram(file.name, shouldFocus);
+            ns.singularity.createProgram(file.name, shouldFocus);
             break;
           }
         }
@@ -59,7 +59,7 @@ function writeOrPurchaseProgram({ ns, currentMoney, shouldBuy, shouldFocus }) {
   }
 
   // Not sure if this is the best approach. Trying something to see how it works scaling.
-  return { isBusy: ns.isBusy() };
+  return { isBusy: ns.singularity.isBusy() };
 }
 
 /**
@@ -67,10 +67,10 @@ function writeOrPurchaseProgram({ ns, currentMoney, shouldBuy, shouldFocus }) {
  * @param {import(".").NS} args.ns Use just "@param {NS} ns" if editing in game
  */
 function joinPendingFactions({ ns }) {
-  const factions = ns.checkFactionInvitations();
+  const factions = ns.singularity.checkFactionInvitations();
   for (let i = 0; i < factions.length; i++) {
     const faction = factions[i];
-    ns.joinFaction(faction);
+    ns.singularity.joinFaction(faction);
   }
 }
 
@@ -79,7 +79,7 @@ function joinPendingFactions({ ns }) {
  * @param {import(".").NS} args.ns Use just "@param {NS} ns" if editing in game
  */
 async function hasFocusPenaltyReductionImplant({ ns }) {
-  const installedAugmentations = ns.getOwnedAugmentations(false);
+  const installedAugmentations = ns.singularity.getOwnedAugmentations(false);
   return installedAugmentations
     .filter((val) => val === 'Neuroreceptor Management Implant') // from Tian Di Hui (Neo Tokyo)
     .length > 0;
@@ -96,7 +96,7 @@ export async function main(ns) {
   let workingMoney = -1;
   let shouldFocus = !hasFocusPenaltyReductionImplant({ ns });
   log(ns, `Determined that player ${shouldFocus ? 'does not have' : 'has'} focus implant.`);
-  // ns.purchaseTor(); // TODO: Figure out a way to tell if this is done already.
+  // ns.singularity.purchaseTor(); // TODO: Figure out a way to tell if this is done already.
   const skipTerms = [
     'bypass',
     'skip',
@@ -109,7 +109,7 @@ export async function main(ns) {
 
     joinPendingFactions({ ns });
 
-    let isBusy = ns.isBusy();
+    let isBusy = ns.singularity.isBusy();
     if (!isBusy) {
       isBusy = writeOrPurchaseProgram({
         ns,
@@ -145,7 +145,7 @@ export async function main(ns) {
       }
 
       if (crimeName) {
-        const expectedTime = ns.commitCrime(crimeName);
+        const expectedTime = ns.singularity.commitCrime(crimeName);
         // commit crime is async. Wait a long time to give other actions a chance to "get through"
         await ns.sleep(expectedTime);
       }
