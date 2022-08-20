@@ -80,9 +80,11 @@ function joinPendingFactions({ ns }) {
  */
 async function hasFocusPenaltyReductionImplant({ ns }) {
   const installedAugmentations = ns.singularity.getOwnedAugmentations(false);
-  return installedAugmentations
-    .filter((val) => val === 'Neuroreceptor Management Implant') // from Tian Di Hui (Neo Tokyo)
-    .length > 0;
+  return (
+    installedAugmentations.filter(
+      (val) => val === 'Neuroreceptor Management Implant',
+    ).length > 0 // from Tian Di Hui (Neo Tokyo)
+  );
 }
 
 /**
@@ -95,14 +97,14 @@ export async function main(ns) {
   let running = true;
   let workingMoney = -1;
   let shouldFocus = !hasFocusPenaltyReductionImplant({ ns });
-  log(ns, `Determined that player ${shouldFocus ? 'does not have' : 'has'} focus implant.`);
+  log(
+    ns,
+    `Determined that player ${
+      shouldFocus ? 'does not have' : 'has'
+    } focus implant.`,
+  );
   // ns.singularity.purchaseTor(); // TODO: Figure out a way to tell if this is done already.
-  const skipTerms = [
-    'bypass',
-    'skip',
-    'none',
-    'off',
-  ];
+  const skipTerms = ['bypass', 'skip', 'none', 'off'];
 
   while (running) {
     workingMoney = ns.getPlayer().money * MONEY_PERCENTAGE;

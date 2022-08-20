@@ -55,16 +55,16 @@ describe(__filename, () => {
     // Arrange
     const nsLsMockResults = {
       home: {
-        '.cct': []
+        '.cct': [],
       },
       child: {
-        '.cct': []
+        '.cct': [],
       },
       alpha: {
-        '.cct': []
+        '.cct': [],
       },
       delta: {
-        '.cct': ['foo.cct']
+        '.cct': ['foo.cct'],
       },
     };
     const nsScanMockResults = {
@@ -107,7 +107,9 @@ describe(__filename, () => {
     const nsScanMock = jest
       .fn()
       .mockImplementation((name) => nsScanMockResults[name]);
-    const nsLsMock = jest.fn().mockImplementation((name, ext) => nsLsMockResults[name][ext])
+    const nsLsMock = jest
+      .fn()
+      .mockImplementation((name, ext) => nsLsMockResults[name][ext]);
     const nsMock = {
       flags: () => ({ help: false }),
       scan: nsScanMock,
@@ -162,5 +164,5 @@ describe(__filename, () => {
 
     // Assert
     expect(result).toStrictEqual([]);
-  })
+  });
 });

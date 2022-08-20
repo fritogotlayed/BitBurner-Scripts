@@ -58,7 +58,8 @@ function sell(ns, stock, numShares) {
   let profit = numShares * (stock.price - stock.buyPrice) - 2 * commission;
   let soldPrice = ns.stock.sellStock(stock.sym, numShares);
   ns.print(
-    `Sold ${stock.sym} for profit of ${format(profit)} at ${Math.round(soldPrice * 100) / 100
+    `Sold ${stock.sym} for profit of ${format(profit)} at ${
+      Math.round(soldPrice * 100) / 100
     }`,
   );
 }
@@ -135,7 +136,7 @@ export async function main(ns) {
     } else {
       ns.print(
         'There are currently no stocks to buy at the desired expRet of ' +
-        desiredExpRet,
+          desiredExpRet,
       );
     }
 
